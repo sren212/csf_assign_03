@@ -15,7 +15,7 @@ int main( int argc, char **argv ) {
     vars.setNum = std::stoi(argv[1]);
   }catch(const std::invalid_argument&){
     return 1
-  }
+  };
 
 
   ifstream f(argv[8]); // open file
