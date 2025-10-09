@@ -1,5 +1,6 @@
 #include <iostream>
 #include <bits/stdc++.h>
+#include "cache_fns.h"
 using namespace std;
 
 int main( int argc, char **argv ) {
