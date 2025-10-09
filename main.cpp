@@ -4,9 +4,21 @@
 using namespace std;
 
 int main( int argc, char **argv ) {
-  // TODO: implement
+  if(argc != 9){
+    cerr << "INCORRECT ARGUMENT INPUT";
+    return 1;
+  }
 
-  ifstream f("README.txt"); // open file
+  cacheVars vars;
+
+  try {
+    vars.setNum = std::stoi(argv[1]);
+  }catch(const std::invalid_argument&){
+    return 1
+  }
+
+
+  ifstream f(argv[8]); // open file
 
   if (!f.is_open()) { // check for errors opening the file
     cerr << "ERROR OPENING TRACE FILE";
