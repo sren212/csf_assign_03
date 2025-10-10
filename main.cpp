@@ -5,18 +5,47 @@ using namespace std;
 
 int main( int argc, char **argv ) {
   if(argc != 9){
-    cerr << "INCORRECT ARGUMENT INPUT";
+    cerr << "INCORRECT ARGUMENT INPUT" << std::endl;
     return 1;
   }
 
   cacheVars vars;
 
+  //number of sets in cache
   try {
     vars.setNum = std::stoi(argv[1]);
+
+    if(!isPowerOfTwo(vars.setNum)){
+      throw std::invalid_argument("Number of sets must be a positive power-of-2");
+    }
   }catch(const std::invalid_argument&){
+    cerr << "Invalid argument" << std::endl;
     return 1;
   }
 
+  //number of blocks in each set
+  try {
+    vars.blockNum = std::stoi(argv[2]);
+
+    if(!isPowerOfTwo(vars.blockNum)){
+      throw std::invalid_argument("Number of blocks must be a positive power-of-2");
+    }
+  }catch(const std::invalid_argument&){
+    cerr << "Invalid argument" << std::endl;
+    return 1;
+  }
+
+  //number of bytes in each block
+  try {
+    vars.bytesPerBlock = std::stoi(argv[3]);
+
+    if(!isPowerOfTwo(vars.bytesPerBlock)){
+      throw std::invalid_argument("Bytes per block must be a positive power-of-2");
+    }
+  }catch(const std::invalid_argument&){
+    cerr << "Invalid argument" << std::endl;
+    return 1;
+  }
 
 
   /* init vars representing total loads, stores, load/store hits, load/store misses, total cycles*/

@@ -10,4 +10,6 @@ struct cacheVars{
     bool eviction; //true = lru, false = fifo
 };
 
+bool isPowerOfTwo(int n);
+
 #endif
