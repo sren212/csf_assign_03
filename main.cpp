@@ -17,15 +17,13 @@ int main( int argc, char **argv ) {
     return 1;
   }
 
-
-
   /* init vars representing total loads, stores, load/store hits, load/store misses, total cycles*/
   int loads = 0;
   int stores = 0;
-  int load_hits = 0;
-  int load_misses = 0;
-  int store_hits = 0;
-  int store_misses = 0;
+  int loadHits = 0;
+  int loadMisses = 0;
+  int storeHits = 0;
+  int storeMisses = 0;
   int cycles = 0;
 
   // open file
@@ -46,14 +44,14 @@ int main( int argc, char **argv ) {
 
     // first field is load/store operation
     getline(line_stream, field, ' '); 
-    string op_string = field;
+    string opString = field;
     
     // second field is memory address
     getline(line_stream, field, ' ');
-    string address_string = field;
+    string addressString = field;
 
     // update total loads/stores:
-    if (op_string == "l"){
+    if (opString == "l"){
       loads++;
     } else {
       stores++;
@@ -65,13 +63,7 @@ int main( int argc, char **argv ) {
   f.close();
 
   // output summary info
-  cout << "Total loads: " << loads << endl;
-  cout << "Total stores: " << stores << endl;
-  cout << "Load hits: " << load_hits << endl;
-  cout << "Load misses: " << load_misses << endl;
-  cout << "Store hits: " << store_hits << endl;
-  cout << "Store misses: " << store_misses << endl;
-  cout << "Total cycles: " << cycles << endl;
+  printSummary(loads, stores, loadHits, loadMisses, storeHits, storeMisses, cycles);
 
   return 0;
 }
