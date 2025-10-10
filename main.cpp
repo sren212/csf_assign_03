@@ -4,18 +4,24 @@
 using namespace std;
 
 int main( int argc, char **argv ) {
+  //all variables from argv
+  int setNum;
+  int blockNum;
+  int bytesPerBlock;
+  bool writeAllocate; 
+  bool writeThrough; //true = write-through, false = write-back
+  bool eviction; //true = lru, false = fifo
+
   if(argc != 7){
     cerr << "INCORRECT ARGUMENT INPUT" << std::endl;
     return 1;
   }
 
-  cacheVars vars;
-
   //number of sets in cache
   try {
-    vars.setNum = std::stoi(argv[1]);
+    setNum = std::stoi(argv[1]);
 
-    if(!isPowerOfTwo(vars.setNum)){
+    if(!isPowerOfTwo(setNum)){
       throw std::invalid_argument("Number of sets must be a positive power-of-2");
     }
   }catch(const std::invalid_argument& e){
@@ -25,9 +31,9 @@ int main( int argc, char **argv ) {
 
   //number of blocks in each set
   try {
-    vars.blockNum = std::stoi(argv[2]);
+    blockNum = std::stoi(argv[2]);
 
-    if(!isPowerOfTwo(vars.blockNum)){
+    if(!isPowerOfTwo(blockNum)){
       throw std::invalid_argument("Number of blocks must be a positive power-of-2");
     }
   }catch(const std::invalid_argument& e){
@@ -37,9 +43,9 @@ int main( int argc, char **argv ) {
 
   //number of bytes in each block
   try {
-    vars.bytesPerBlock = std::stoi(argv[3]);
+    bytesPerBlock = std::stoi(argv[3]);
 
-    if(!isPowerOfTwo(vars.bytesPerBlock)){
+    if(!isPowerOfTwo(bytesPerBlock)){
       throw std::invalid_argument("Bytes per block must be a positive power-of-2");
     }
   }catch(const std::invalid_argument& e){
@@ -50,9 +56,9 @@ int main( int argc, char **argv ) {
   //write-allocate
   try{
     if(strcmp(argv[4], "write-allocate")){
-      vars.writeAllocate = true;
+      writeAllocate = true;
     }else if(strcmp(argv[4], "no-write-allocate")){
-      vars.writeAllocate = false;
+      writeAllocate = false;
     }else{
       throw std::invalid_argument("must enter write-allocate/no-write-allocate for 4th argument");
     }
@@ -64,9 +70,9 @@ int main( int argc, char **argv ) {
   //write-through / write-back
   try{
     if(strcmp(argv[5], "write-through")){
-      vars.writeThrough = true;
+      writeThrough = true;
     }else if(strcmp(argv[5], "write-back")){
-      vars.writeThrough = false;
+      writeThrough = false;
     }else{
       throw std::invalid_argument("must enter write-through/no-write-back for 5th argument");
     }
@@ -78,9 +84,9 @@ int main( int argc, char **argv ) {
   //lru / fifo
   try{
     if(strcmp(argv[6], "lru")){
-      vars.eviction = true;
+      eviction = true;
     }else if(strcmp(argv[6], "fifo")){
-      vars.eviction = false;
+      eviction = false;
     }else{
       throw std::invalid_argument("must enter lru / fifo for 6th argument");
     }

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "cache_fns.h"
-using namespace std;
 
 void printSummary(int loads, int stores, int loadHits, int loadMisses, 
                   int storeHits, int storeMisses, int cycles) {
