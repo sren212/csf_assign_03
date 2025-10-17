@@ -5,6 +5,7 @@
 #include <cstdint>
 using namespace std;
 
+//a "block" with extra attributes
 struct Slot{
     uint32_t tag;
     bool valid, dirty;
