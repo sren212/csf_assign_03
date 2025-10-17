@@ -47,6 +47,8 @@ int main( int argc, char **argv ) {
 
     if(!isPowerOfTwo(bytesPerBlock)){
       throw std::invalid_argument("Bytes per block must be a positive power-of-2");
+    }else if(bytesPerBlock < 4){
+      throw std::invalid_argument("Bytes per block must be greater than or equal to 4");
     }
   }catch(const std::invalid_argument& e){
     cerr << "Invalid argument: " << e.what() << std::endl;
@@ -72,6 +74,9 @@ int main( int argc, char **argv ) {
     if(strcmp(argv[5], "write-through")){
       writeThrough = true;
     }else if(strcmp(argv[5], "write-back")){
+      if(!writeAllocate){
+        throw std::invalid_argument("cannot specify write-back and no-write-allocate at the same time");
+      }
       writeThrough = false;
     }else{
       throw std::invalid_argument("must enter write-through/no-write-back for 5th argument");
