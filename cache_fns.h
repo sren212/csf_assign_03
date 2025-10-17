@@ -21,7 +21,8 @@ struct Cache {
     std::vector<Set> sets;
 };
 
-std::map<uint32_t, Slot *> index;
+//only add index if necessary
+// std::map<uint32_t, Slot *> index;
 
 //checks if the number if a power of 2
 bool isPowerOfTwo(int n);

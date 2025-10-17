@@ -13,19 +13,19 @@ int main( int argc, char **argv ) {
   bool eviction; //true = lru, false = fifo
 
   if(argc != 7){
-    cerr << "INCORRECT ARGUMENT INPUT" << std::endl;
+    cerr << "INCORRECT ARGUMENT INPUT" << endl;
     return 1;
   }
 
   //number of sets in cache
   try {
-    setNum = std::stoi(argv[1]);
+    setNum = stoi(argv[1]);
 
     if(!isPowerOfTwo(setNum)){
-      throw std::invalid_argument("Number of sets must be a positive power-of-2");
+      throw invalid_argument("Number of sets must be a positive power-of-2");
     }
-  }catch(const std::invalid_argument& e){
-    cerr << "Invalid argument: " << e.what() << std::endl;
+  }catch(const invalid_argument& e){
+    cerr << "Invalid argument: " << e.what() << endl;
     return 1;
   }
 
@@ -99,6 +99,14 @@ int main( int argc, char **argv ) {
     cerr << "Invalid argument: " << e.what() << std::endl;
     return 1;
   }
+
+  //set up & initialize the cache
+  Cache cache;
+  Set set;
+  Slot slot;
+
+  cache.sets.resize(setNum);
+  set.slots.resize(blockNum);
 
 
   /* init vars representing total loads, stores, load/store hits, load/store misses, total cycles*/
