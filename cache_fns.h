@@ -20,9 +20,10 @@ struct Set{
 struct Cache {
     std::vector<Set> sets;
 
+    // init a cache and the sets inside of it to be a certain size
     Cache(int num_sets, int num_slots) {
         sets.resize(num_sets);
-        for (size_t i = 0; i < sets.size(); ++i) {
+        for (size_t i = 0; i < sets.size(); i++) {
             sets[i].slots.resize(num_slots);
         }
     }
