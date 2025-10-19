@@ -19,6 +19,13 @@ struct Set{
 
 struct Cache {
     std::vector<Set> sets;
+
+    Cache(int num_sets, int num_slots) {
+        sets.resize(num_sets);
+        for (size_t i = 0; i < sets.size(); ++i) {
+            sets[i].slots.resize(num_slots);
+        }
+    }
 };
 
 std::map<uint32_t, Slot *> index;
