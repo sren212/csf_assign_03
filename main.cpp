@@ -1,6 +1,8 @@
 #include <iostream>
 #include <bits/stdc++.h>
 #include "cache_fns.h"
+#include <sstream>
+#include <string>
 using namespace std;
 
 int main( int argc, char **argv ) {
@@ -31,27 +33,27 @@ int main( int argc, char **argv ) {
 
   //number of blocks in each set
   try {
-    blockNum = std::stoi(argv[2]);
+    blockNum = stoi(argv[2]);
 
     if(!isPowerOfTwo(blockNum)){
-      throw std::invalid_argument("Number of blocks must be a positive power-of-2");
+      throw invalid_argument("Number of blocks must be a positive power-of-2");
     }
-  }catch(const std::invalid_argument& e){
-    cerr << "Invalid argument: " << e.what() << std::endl;
+  }catch(const invalid_argument& e){
+    cerr << "Invalid argument: " << e.what() << endl;
     return 1;
   }
 
   //number of bytes in each block
   try {
-    bytesPerBlock = std::stoi(argv[3]);
+    bytesPerBlock = stoi(argv[3]);
 
     if(!isPowerOfTwo(bytesPerBlock)){
-      throw std::invalid_argument("Bytes per block must be a positive power-of-2");
+      throw invalid_argument("Bytes per block must be a positive power-of-2");
     }else if(bytesPerBlock < 4){
-      throw std::invalid_argument("Bytes per block must be greater than or equal to 4");
+      throw invalid_argument("Bytes per block must be greater than or equal to 4");
     }
-  }catch(const std::invalid_argument& e){
-    cerr << "Invalid argument: " << e.what() << std::endl;
+  }catch(const invalid_argument& e){
+    cerr << "Invalid argument: " << e.what() << endl;
     return 1;
   }
 
@@ -62,10 +64,10 @@ int main( int argc, char **argv ) {
     }else if(strcmp(argv[4], "no-write-allocate")){
       writeAllocate = false;
     }else{
-      throw std::invalid_argument("must enter write-allocate/no-write-allocate for 4th argument");
+      throw invalid_argument("must enter write-allocate/no-write-allocate for 4th argument");
     }
-  }catch(const std::invalid_argument& e){
-    cerr << "Invalid argument: " << e.what() << std::endl;
+  }catch(const invalid_argument& e){
+    cerr << "Invalid argument: " << e.what() << endl;
     return 1;
   }
 
@@ -75,14 +77,14 @@ int main( int argc, char **argv ) {
       writeThrough = true;
     }else if(strcmp(argv[5], "write-back")){
       if(!writeAllocate){
-        throw std::invalid_argument("cannot specify write-back and no-write-allocate at the same time");
+        throw invalid_argument("cannot specify write-back and no-write-allocate at the same time");
       }
       writeThrough = false;
     }else{
-      throw std::invalid_argument("must enter write-through/no-write-back for 5th argument");
+      throw invalid_argument("must enter write-through/no-write-back for 5th argument");
     }
-  }catch(const std::invalid_argument& e){
-    cerr << "Invalid argument: " << e.what() << std::endl;
+  }catch(const invalid_argument& e){
+    cerr << "Invalid argument: " << e.what() << endl;
     return 1;
   }
 
@@ -93,10 +95,10 @@ int main( int argc, char **argv ) {
     }else if(strcmp(argv[6], "fifo")){
       eviction = false;
     }else{
-      throw std::invalid_argument("must enter lru / fifo for 6th argument");
+      throw invalid_argument("must enter lru / fifo for 6th argument");
     }
-  }catch(const std::invalid_argument& e){
-    cerr << "Invalid argument: " << e.what() << std::endl;
+  }catch(const invalid_argument& e){
+    cerr << "Invalid argument: " << e.what() << endl;
     return 1;
   }
 
@@ -112,21 +114,8 @@ int main( int argc, char **argv ) {
   /* init cache */
   Cache cache(setNum, blockNum);
 
-  /*
-
-  // open file
-  ifstream f(argv[7]);
-
-  // check for errors opening the file
-  if (!f.is_open()) {
-    cerr << "ERROR OPENING TRACE FILE";
-    return 1;
-  }
-
-  // read file and do operations
   string line;
-  while (getline(f, line)) {
-
+  while(getline(cin, line)){
     stringstream line_stream(line);
     string field;
 
@@ -146,14 +135,6 @@ int main( int argc, char **argv ) {
     }
 
     // do operations
-  }
-
-  f.close();
-  */
-
-  std::string line;
-  while(std::getline(std::cin, line)){
-    //do operations on "line" for each line of input
   }
 
   // output summary info
