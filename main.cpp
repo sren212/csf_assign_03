@@ -118,6 +118,9 @@ int main( int argc, char **argv ) {
   int storeMisses = 0;
   int cycles = 0;
 
+  /* init cache */
+  Cache cache(setNum, blockNum);
+
   /*
 
   // open file
