@@ -100,15 +100,6 @@ int main( int argc, char **argv ) {
     return 1;
   }
 
-  //set up & initialize the cache
-  Cache cache;
-  Set set;
-  Slot slot;
-
-  cache.sets.resize(setNum);
-  set.slots.resize(blockNum);
-
-
   /* init vars representing total loads, stores, load/store hits, load/store misses, total cycles*/
   int loads = 0;
   int stores = 0;
