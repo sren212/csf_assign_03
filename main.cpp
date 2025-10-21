@@ -135,6 +135,32 @@ int main( int argc, char **argv ) {
     }
 
     // do operations
+    //split hexadecimal from "0x"
+    if(addressString.length() == 10){
+      addressString.erase(0, 2);
+    }else{
+      cerr << "invalid address in trace file" << endl;
+      return 2;
+    }
+
+    // convert hexadecimal into binary, then split into tag and index
+    uint32_t tag;
+    uint32_t index;
+    divAddress(convertHexDec(addressString), &tag, &index);
+    
+    //search if cache contains data
+    Slot slot = searchCache(tag, index);
+
+    //update hit/miss
+    if(slot.tag == tag && opString == "l"){
+      loadHits++;
+    }else if(slot.tag == tag && opString == "s"){
+      storeHits++;
+    }else if(slot.tag != tag && opString == "l"){
+      loadMisses++;
+    }else{
+      storeMisses++;
+    }
   }
 
   // output summary info
