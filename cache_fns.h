@@ -49,6 +49,40 @@ void divAddress(uint32_t address, uint32_t *tag, uint32_t *index);
 //returns: slot (where data is contained / should be stored)
 Slot searchCache(uint32_t tag, uint32_t index);
 
+// Update the cache to represent its state after a load or store
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+// op_type - operation type: 'l' if load and 's' if store
+// write_allocate - true if we are using write allocate and false if we are using no-write-allocate
+// write_through - true if we are using write_through and false if we are using write_back
+// hit - true if this operation had a hit and false if this operation had a miss
+// lru - true if we are using lru, and false if we are using fifo
+void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool write_allocate, bool write_through, bool hit, bool lru);
+
+// Update the cache to represent its state after a load
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+// hit - true if this operation had a hit and false if this operation had a miss
+// lru - true if we are using lru, and false if we are using fifo
+void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru);
+
+// Update the cache to represent its state after a store
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+// write_allocate - true if we are using write allocate and false if we are using no-write-allocate
+// write_through - true if we are using write_through and false if we are using write_back
+// hit - true if this operation had a hit and false if this operation had a miss
+// lru - true if we are using lru, and false if we are using fifo
+void updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru);
 
 // Print out a summary of the cache simulator.
 //
