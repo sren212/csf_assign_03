@@ -35,16 +35,16 @@ struct Cache {
 //checks if the number if a power of 2
 bool isPowerOfTwo(int n);
 
-//converts hexadecimal to binary
+//converts hexadecimal to int
 uint32_t convertHexDec(string hex);
 
 //divides address into tag, index, offset
 //modifies pointer of tag and index
 //parameters: address, pointer of tag, pointer of index
 //returns: void
-void divAddress(uint32_t address, uint32_t *tag, uint32_t *index);
+void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, uint32_t *index);
 
-//searches if cache contains data
+//searches if cache contains data, choooses the correct slot for new data if not found
 //parameters: tag, index
 //returns: slot (where data is contained / should be stored)
 Slot searchCache(uint32_t tag, uint32_t index);

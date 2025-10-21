@@ -146,7 +146,7 @@ int main( int argc, char **argv ) {
     // convert hexadecimal into binary, then split into tag and index
     uint32_t tag;
     uint32_t index;
-    divAddress(convertHexDec(addressString), &tag, &index);
+    divAddress(convertHexDec(addressString), bytesPerBlock, setNum, &tag, &index);
     
     //search if cache contains data
     Slot slot = searchCache(tag, index);
@@ -154,12 +154,16 @@ int main( int argc, char **argv ) {
     //update hit/miss
     if(slot.tag == tag && opString == "l"){
       loadHits++;
+      cycles++;
     }else if(slot.tag == tag && opString == "s"){
       storeHits++;
+      cycles++;
     }else if(slot.tag != tag && opString == "l"){
       loadMisses++;
+      cycles += bytesPerBlock*100;
     }else{
       storeMisses++;
+      cycles += bytesPerBlock*100;
     }
   }
 
