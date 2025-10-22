@@ -116,6 +116,14 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index);
 // returns: the tag of the slot to evict
 uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru);
 
+// Find an empty slot or evict an empty slot in the set at index and update with tag
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+bool updateSlot(Cache *cache, uint32_t tag, uint32_t index);
+
 // Print out a summary of the cache simulator.
 //
 // Parameters:
