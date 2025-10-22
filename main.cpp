@@ -149,16 +149,16 @@ int main( int argc, char **argv ) {
     divAddress(convertHexDec(addressString), bytesPerBlock, setNum, &tag, &index);
     
     //search if cache contains data
-    Slot slot = searchCache(tag, index);
+    bool hit = isHit(&cache, tag, index);
 
     //update hit/miss
-    if(slot.tag == tag && opString == "l"){
+    if(hit && opString == "l"){
       loadHits++;
       cycles++;
-    }else if(slot.tag == tag && opString == "s"){
+    }else if(hit && opString == "s"){
       storeHits++;
       cycles++;
-    }else if(slot.tag != tag && opString == "l"){
+    }else if(!hit && opString == "l"){
       loadMisses++;
       cycles += bytesPerBlock*100;
     }else{
