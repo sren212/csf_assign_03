@@ -75,7 +75,8 @@ void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool 
 // index - the index of the element
 // hit - true if this operation had a hit and false if this operation had a miss
 // lru - true if we are using lru, and false if we are using fifo
-void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru);
+// returns true if we evicted a dirty slot
+bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru);
 
 // Update the cache to represent its state after a store
 //
@@ -87,7 +88,8 @@ void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 // write_through - true if we are using write_through and false if we are using write_back
 // hit - true if this operation had a hit and false if this operation had a miss
 // lru - true if we are using lru, and false if we are using fifo
-void updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru);
+// returns true if we evicted a dirty slot
+bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru);
 
 // Update the cache to represent its state after a load
 //

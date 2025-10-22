@@ -47,6 +47,8 @@ void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool 
 // Update the cache to represent its state after a load
 void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
     if (!hit) {
+        uint32_t evict_index = chooseEvict(cache, index, lru);
+        Slot evict = (*cache).sets[index].slots[evict_index];
     }
     updateAccessTS(cache, tag, index);
     updateLoadTS(cache, tag, index);
