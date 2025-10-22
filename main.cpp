@@ -162,11 +162,10 @@ int main( int argc, char **argv ) {
       loadMisses++;
       cycles += bytesPerBlock*100;
     }else{
-      if (!writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
-        continue;
-      }
       storeMisses++;
-      cycles += bytesPerBlock*100;
+      if (writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
+        cycles += bytesPerBlock*100;
+      }
     }
 
     // update cache
