@@ -36,8 +36,9 @@ Slot searchCache(uint32_t tag, uint32_t index){
 bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
     bool evict_dirty = false;
 
+    // if it's a miss, we need to find an empty slot/evict a slot and update it
     if (!hit) {
-        updateSlot(cache, tag, index, lru);
+        evict_dirty = updateSlot(cache, tag, index, lru);
     }
 
     // update timestamps
@@ -60,10 +61,12 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
 
 // Update the cache to represent its state after an access
 void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
+
     Set target_set = (*cache).sets[index];
     // find the slot
     Slot target_slot = target_set.slots[0];
 
+    // find the slot with our target tag
     int slot_index = 0;
     while(target_slot.tag != tag) {
         target_slot = target_set.slots[slot_index++];
@@ -101,7 +104,8 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
     Set target_set = (*cache).sets[index];
     // find the slot
     Slot target_slot = target_set.slots[0];
-
+    
+    // find the slot with our target tag
     int slot_index = 0;
     while(target_slot.tag != tag) {
         target_slot = target_set.slots[slot_index++];
@@ -144,6 +148,7 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
         tag = -1;
         uint32_t max_access_ts = -1;
 
+        // go through slots and find the slot with the highest access_ts
         for(int i = 0; i < target_set.slots.size(); i++) {
             Slot curr_slot = target_set.slots[i];
             if (curr_slot.access_ts > max_access_ts) {
@@ -156,6 +161,7 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
         tag = -1;
         uint32_t max_load_ts = -1;
 
+        // go through slots and find the slot with the highest load_ts
         for(int i = 0; i < target_set.slots.size(); i++) {
             Slot curr_slot = target_set.slots[i];
             if (curr_slot.load_ts > max_load_ts) {
