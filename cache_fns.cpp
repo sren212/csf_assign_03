@@ -136,10 +136,11 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
 // Choose the slot to be evicted in the full set at the index.
 uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
     Set target_set = (*cache).sets[index];
+    uint32_t tag;
 
     // using least recently used
     if (lru) {
-        uint32_t tag = -1;
+        tag = -1;
         uint32_t max_access_ts = -1;
 
         for(int i = 0; i < target_set.slots.size(); i++) {
@@ -151,7 +152,7 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
         }
 
     } else { // using fifo
-        uint32_t tag = -1;
+        tag = -1;
         uint32_t max_load_ts = -1;
 
         for(int i = 0; i < target_set.slots.size(); i++) {
