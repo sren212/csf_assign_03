@@ -67,13 +67,17 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 
 // Update the cache to represent its state after a store
 bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru) {
-    //store miss
+    bool evict = false;
+
     if(!hit){
         if(write_allocate && !write_through){
-            //
-
+            evict = updateSlot(cache, tag, index, lru);
         }
     }
+
+    updateAccessTS(cache, tag, index);
+
+    return evict;
 }
 
 
