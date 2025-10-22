@@ -141,6 +141,7 @@ int main( int argc, char **argv ) {
     uint32_t index;
     divAddress(convertHexDec(addressString), bytesPerBlock, setNum, &tag, &index);
     
+    //variable to account for whether we evicted a dirty slot during process
     bool evict_dirty = false;
 
     //search if cache contains data
