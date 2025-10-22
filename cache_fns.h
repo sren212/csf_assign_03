@@ -9,7 +9,7 @@ using namespace std;
 struct Slot{
     uint32_t tag;
     bool valid, dirty;
-    uint32_t load_ts, //load timestamp (calculate # of loads & stores that has happened thus far OR cycle count)
+    uint32_t load_ts, //load timestamp
         access_ts;
 };
 
