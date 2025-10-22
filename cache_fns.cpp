@@ -16,27 +16,24 @@ uint32_t convertHexDec(string hex){
 //modifies pointer of tag and index
 //returns: void
 void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, uint32_t *index){
+    uint32_t offsetBits = 0;
+    uint32_t x = bytesPerBlock;
+    while((x >>= 1) != 0) ++offsetBits;
+    
     //gets rid of offset
-    address >> bytesPerBlock;
+    address >>= offsetBits;
+
+    uint32_t indexBits = 0;
+    x = setNum;
+    while((x >>= 1) != 0) ++indexBits;
 
     //take index and store
-    *index = address & setBitsToOne(static_cast<uint32_t>(setNum));
-    address >> (int)log2(setNum)+1;
+    uint32_t indexMask = (indexBits == 32) ? 0xFFFFFFFFu : ((1u << indexBits)-1u)
+    *index = address & indexMask;
+    address >>= indexBits;
 
     //take tag and store
     *tag = address;
-}
-
-//helper method for divAddress
-uint32_t setBitsToOne(uint32_t n){
-    n |= (n >> 1);
-    n |= (n >> 2);
-    n |= (n >> 4);
-    n |= (n >> 8);
-    n |= (n >> 16);
-    n |= (n >> 32);
-
-    return n;
 }
 
 // given a tag and an index of an element, determine whether it is a hit or a miss
