@@ -91,7 +91,7 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 // returns true if we evicted a dirty slot
 bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru);
 
-// Update the cache to represent its state after a load
+// Update the cache to represent its state after an access
 //
 // Parameters:
 // cache - the cache
