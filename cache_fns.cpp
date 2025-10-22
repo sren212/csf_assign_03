@@ -32,18 +32,6 @@ Slot searchCache(uint32_t tag, uint32_t index){
     //TODO
 }
 
-// Update the cache to represent its state after a load or store
-void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool write_allocate, bool write_through, bool hit, bool lru){
-    // load
-    if (op_type == 'l') {
-        updateCacheLoad(cache, tag, index, hit, lru);
-    }
-    // store
-    else if (op_type == 's') {
-        updateCacheStore(cache, tag, index, write_allocate, write_through, hit, lru);
-    }
-}
-
 // Update the cache to represent its state after a load
 bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
     bool evict_dirty = false;
@@ -61,8 +49,15 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 
 // Update the cache to represent its state after a store
 bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru) {
+    //store miss
+    if(!hit){
+        if(write_allocate && !write_through){
+            //
 
+        }
+    }
 }
+
 
 // Update the cache to represent its state after a load
 void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
