@@ -28,7 +28,7 @@ void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, 
     while((x >>= 1) != 0) ++indexBits;
 
     //take index and store
-    uint32_t indexMask = (indexBits == 32) ? 0xFFFFFFFFu : ((1u << indexBits)-1u)
+    uint32_t indexMask = (indexBits == 32) ? 0xFFFFFFFFu : ((1u << indexBits)-1u);
     *index = address & indexMask;
     address >>= indexBits;
 
