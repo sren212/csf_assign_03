@@ -12,7 +12,7 @@ int main( int argc, char **argv ) {
   int bytesPerBlock;
   bool writeAllocate; 
   bool writeThrough; //true = write-through, false = write-back
-  bool eviction; //true = lru, false = fifo
+  bool lru; //true = lru, false = fifo
 
   if(argc != 7){
     cerr << "INCORRECT ARGUMENT INPUT" << endl;
@@ -91,9 +91,9 @@ int main( int argc, char **argv ) {
   //lru / fifo
   try{
     if(strcmp(argv[6], "lru")){
-      eviction = true;
+      lru = true;
     }else if(strcmp(argv[6], "fifo")){
-      eviction = false;
+      lru = false;
     }else{
       throw invalid_argument("must enter lru / fifo for 6th argument");
     }
@@ -148,6 +148,8 @@ int main( int argc, char **argv ) {
     uint32_t index;
     divAddress(convertHexDec(addressString), bytesPerBlock, setNum, &tag, &index);
     
+    bool evict_dirty = false;
+
     //search if cache contains data
     bool hit = isHit(&cache, tag, index);
 
@@ -155,25 +157,21 @@ int main( int argc, char **argv ) {
     if(hit && opString == "l"){
       loadHits++;
       cycles++;
+      evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else if(hit && opString == "s"){
       storeHits++;
       cycles++;
+      evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else if(!hit && opString == "l"){
       loadMisses++;
       cycles += bytesPerBlock*100;
+      evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }else{
       storeMisses++;
       if (writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
         cycles += bytesPerBlock*100;
       }
-    }
-
-    // update cache
-    bool evict_dirty = false;
-    if(opString == "l") {
-      evict_dirty = updateCacheLoad(&cache, tag, index, hit, eviction);
-    } else {
-      evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, eviction);
+      evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }
 
     // add to cycles if we evicted a dirty bit and we are using write-back
