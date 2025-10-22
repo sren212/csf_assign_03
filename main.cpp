@@ -112,7 +112,8 @@ int main( int argc, char **argv ) {
   int cycles = 0;
 
   /* init cache */
-  Cache cache(setNum, blockNum);
+  Cache cache;
+  initCache(setNum, blockNum, &cache);
 
   string line;
   while(getline(cin, line)){

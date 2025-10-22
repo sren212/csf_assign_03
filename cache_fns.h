@@ -19,26 +19,12 @@ struct Set{
 
 struct Cache {
     std::vector<Set> sets;
-
-    // init a cache and the sets inside of it to be a certain size
-    Cache(int num_sets, int num_slots) {
-        sets.resize(num_sets);
-        for (size_t i = 0; i < sets.size(); i++) {
-            sets[i].slots.resize(num_slots);
-            for (size_t j = 0; j < sets[i].slots.size(); j++) {
-                Slot slot = sets[i].slots[j];
-                slot.tag = 0;
-                slot.valid = false;
-                slot.dirty = false;
-                slot.load_ts = 0;
-                slot.access_ts = 0;
-            }
-        }
-    }
 };
 
 //only add index if necessary
 // std::map<uint32_t, Slot *> index;
+
+void initCache(int num_sets, int num_slots, Cache *cache);
 
 //checks if the number if a power of 2
 bool isPowerOfTwo(int n);

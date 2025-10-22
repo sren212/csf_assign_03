@@ -3,6 +3,21 @@
 #include <cmath>
 #include "cache_fns.h"
 
+void initCache(int num_sets, int num_slots, Cache *cache){
+    (*cache).sets.resize(num_sets);
+    for (size_t i = 0; i < (*cache).sets.size(); i++) {
+        (*cache).sets[i].slots.resize(num_slots);
+        for (size_t j = 0; j < (*cache).sets[i].slots.size(); j++) {
+            Slot slot = (*cache).sets[i].slots[j];
+            slot.tag = 0;
+            slot.valid = false;
+            slot.dirty = false;
+            slot.load_ts = 0;
+            slot.access_ts = 0;
+        }
+    }
+}
+
 bool isPowerOfTwo(int n){
     return n > 0 && (n & (n-1)) == 0;
 }
