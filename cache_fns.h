@@ -49,23 +49,10 @@ uint32_t convertHexDec(string hex);
 //returns: void
 void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, uint32_t *index);
 
-//searches if cache contains data, choooses the correct slot for new data if not found
-//parameters: tag, index
-//returns: slot (where data is contained / should be stored)
-Slot searchCache(uint32_t tag, uint32_t index);
-
-// Update the cache to represent its state after a load or store
-//
-// Parameters:
-// cache - the cache
-// tag - the tag of the element
-// index - the index of the element
-// op_type - operation type: 'l' if load and 's' if store
-// write_allocate - true if we are using write allocate and false if we are using no-write-allocate
-// write_through - true if we are using write_through and false if we are using write_back
-// hit - true if this operation had a hit and false if this operation had a miss
-// lru - true if we are using lru, and false if we are using fifo
-void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool write_allocate, bool write_through, bool hit, bool lru);
+// given a tag and an index of an element, determine whether it is a hit or a miss
+// parameters: cache, tag, index
+// returns: true if it's a hit and false if not
+bool isHit(Cache *cache, uint32_t tag, uint32_t index);
 
 // Update the cache to represent its state after a load
 //

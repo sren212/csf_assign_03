@@ -149,21 +149,42 @@ int main( int argc, char **argv ) {
     divAddress(convertHexDec(addressString), bytesPerBlock, setNum, &tag, &index);
     
     //search if cache contains data
-    Slot slot = searchCache(tag, index);
+    bool hit = isHit(&cache, tag, index);
 
     //update hit/miss
-    if(slot.tag == tag && opString == "l"){
+    if(hit && opString == "l"){
       loadHits++;
       cycles++;
-    }else if(slot.tag == tag && opString == "s"){
+    }else if(hit && opString == "s"){
       storeHits++;
       cycles++;
-    }else if(slot.tag != tag && opString == "l"){
+    }else if(!hit && opString == "l"){
       loadMisses++;
       cycles += bytesPerBlock*100;
     }else{
+      if (!writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
+        continue;
+      }
       storeMisses++;
       cycles += bytesPerBlock*100;
+    }
+
+    // update cache
+    bool evict_dirty = false;
+    if(opString == "l") {
+      evict_dirty = updateCacheLoad(&cache, tag, index, hit, eviction);
+    } else {
+      evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, eviction);
+    }
+
+    // add to cycles if we evicted a dirty bit and we are using write-back
+    if (evict_dirty && !writeThrough) {
+      cycles += bytesPerBlock*100;
+    }
+
+    // add to cycles if we used write-through
+    if (writeThrough) {
+      cycles += bytesPerBlock*100 + 1;
     }
   }
 

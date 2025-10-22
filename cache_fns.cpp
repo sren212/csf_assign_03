@@ -27,9 +27,18 @@ void divAddress(uint32_t address, int bytesPerBlock, int setNum, int *tag, int *
     *tag = address;
 }
 
-//searches cache for where data is located/should be located
-Slot searchCache(uint32_t tag, uint32_t index){
-    //TODO
+// given a tag and an index of an element, determine whether it is a hit or a miss
+bool isHit(Cache *cache, uint32_t tag, uint32_t index){
+    Set target_set = (*cache).sets[index];
+    
+    // search set for a slot whose tag matches our target tag
+    for(int i = 0; i < target_set.slots.size(); i++) {
+        if (target_set.slots[i].tag == tag) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Update the cache to represent its state after a load
