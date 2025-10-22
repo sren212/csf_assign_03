@@ -20,11 +20,23 @@ void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, 
     address >> bytesPerBlock;
 
     //take index and store
-    *index = address & static_cast<uint32_t>(std::log2(setNum));
+    *index = address & setBitsToOne(static_cast<uint32_t>(setNum));
     address >> (int)log2(setNum)+1;
 
     //take tag and store
     *tag = address;
+}
+
+//helper method for divAddress
+uint32_t setBitsToOne(uint32_t n){
+    n |= (n >> 1);
+    n |= (n >> 2);
+    n |= (n >> 4);
+    n |= (n >> 8);
+    n |= (n >> 16);
+    n |= (n >> 32);
+
+    return n;
 }
 
 // given a tag and an index of an element, determine whether it is a hit or a miss
