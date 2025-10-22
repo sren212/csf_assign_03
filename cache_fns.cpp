@@ -48,47 +48,89 @@ void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool 
 void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
     if (hit) {
         // find the set
-        Set target_set = (*cache).sets[index];
-
-        // find the slot
-        Slot target_slot = target_set.slots[0];
-
-        int index = 0;
-        while(target_slot.tag != tag) {
-            target_slot = target_set.slots[index++];
-        }
-
-        // update access_ts of the slot
-        int curr_access = target_slot.access_ts;
-        // if access_ts isn't already the max (slots.size() - 1), update slots
-        if (curr_access != 0) {
-            target_slot.access_ts = 0;
-            
-            // update access_ts of all other slots
-            for (int i = 0; i < target_set.slots.size() - 1; i++) {
-                // skip index of the slot we already updated
-                if (i == index)
-                    break;
-
-                Slot curr_slot = target_set.slots[i];
-
-                // skip invalid slots
-                if (!curr_slot.valid)
-                    break;
-                
-                // inrease the timestamp if it is less than the original access_ts of our target
-                // otherwise, the timestamp will remain the same
-                if (curr_slot.access_ts < curr_access) {
-                    curr_slot.access_ts += 1;
-                }
-            }
-        }
+        
     }
 }
 
 // Update the cache to represent its state after a store
 void updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru) {
 
+}
+
+// Update the cache to represent its state after a load
+void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
+    Set target_set = (*cache).sets[index];
+    // find the slot
+    Slot target_slot = target_set.slots[0];
+
+    int index = 0;
+    while(target_slot.tag != tag) {
+        target_slot = target_set.slots[index++];
+    }
+
+    // update access_ts of the slot
+    int curr_access = target_slot.access_ts;
+    // if access_ts isn't already the max (slots.size() - 1), update slots
+    if (curr_access != 0) {
+        target_slot.access_ts = 0;
+        
+        // update access_ts of all other slots
+        for (int i = 0; i < target_set.slots.size() - 1; i++) {
+            // skip index of the slot we already updated
+            if (i == index)
+                continue;
+
+            Slot curr_slot = target_set.slots[i];
+
+            // skip invalid slots
+            if (!curr_slot.valid)
+                continue;
+            
+            // inrease the timestamp if it is less than the original access_ts of our target
+            // otherwise, the timestamp will remain the same
+            if (curr_slot.access_ts < curr_access) {
+                curr_slot.access_ts += 1;
+            }
+        }
+    }
+}
+
+// Update the cache to represent its state after a load
+void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
+    Set target_set = (*cache).sets[index];
+    // find the slot
+    Slot target_slot = target_set.slots[0];
+
+    int index = 0;
+    while(target_slot.tag != tag) {
+        target_slot = target_set.slots[index++];
+    }
+
+    // update load_ts of the slot
+    int curr_access = target_slot.load_ts;
+    // if load_ts isn't already the max (slots.size() - 1), update slots
+    if (curr_access != 0) {
+        target_slot.load_ts = 0;
+        
+        // update load_ts of all other slots
+        for (int i = 0; i < target_set.slots.size() - 1; i++) {
+            // skip index of the slot we already updated
+            if (i == index)
+                continue;
+
+            Slot curr_slot = target_set.slots[i];
+
+            // skip invalid slots
+            if (!curr_slot.valid)
+                continue;
+            
+            // inrease the timestamp if it is less than the original load_ts of our target
+            // otherwise, the timestamp will remain the same
+            if (curr_slot.load_ts < curr_access) {
+                curr_slot.load_ts += 1;
+            }
+        }
+    }
 }
 
 void printSummary(int loads, int stores, int loadHits, int loadMisses, 

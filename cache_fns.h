@@ -89,6 +89,22 @@ void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 // lru - true if we are using lru, and false if we are using fifo
 void updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru);
 
+// Update the cache to represent its state after a load
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index);
+
+// Update the cache to represent its state after a load
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index);
+
 // Print out a summary of the cache simulator.
 //
 // Parameters:
