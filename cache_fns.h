@@ -54,19 +54,6 @@ void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, 
 // returns: true if it's a hit and false if not
 bool isHit(Cache *cache, uint32_t tag, uint32_t index);
 
-// Update the cache to represent its state after a load or store
-//
-// Parameters:
-// cache - the cache
-// tag - the tag of the element
-// index - the index of the element
-// op_type - operation type: 'l' if load and 's' if store
-// write_allocate - true if we are using write allocate and false if we are using no-write-allocate
-// write_through - true if we are using write_through and false if we are using write_back
-// hit - true if this operation had a hit and false if this operation had a miss
-// lru - true if we are using lru, and false if we are using fifo
-void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool write_allocate, bool write_through, bool hit, bool lru);
-
 // Update the cache to represent its state after a load
 //
 // Parameters:
