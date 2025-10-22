@@ -153,7 +153,7 @@ int main( int argc, char **argv ) {
     //search if cache contains data
     bool hit = isHit(&cache, tag, index);
 
-    //update hit/miss
+    //update hit/miss & cache
     if(hit && opString == "l"){
       loadHits++;
       cycles++;
