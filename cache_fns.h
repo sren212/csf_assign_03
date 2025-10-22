@@ -105,6 +105,15 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index);
 // index - the index of the element
 void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index);
 
+// Choose the slot to be evicted in the full set at the index.
+//
+// Parameters:
+// cache - the cache
+// index - the index of the set
+// lru - whether we are using lru (true) or fifo (false)
+// returns: the tag of the slot to evict
+uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru);
+
 // Print out a summary of the cache simulator.
 //
 // Parameters:

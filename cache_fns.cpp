@@ -46,10 +46,10 @@ void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool 
 
 // Update the cache to represent its state after a load
 void updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
-    if (hit) {
-        // find the set
-        
+    if (!hit) {
     }
+    updateAccessTS(cache, tag, index);
+    updateLoadTS(cache, tag, index);
 }
 
 // Update the cache to represent its state after a store
@@ -131,6 +131,39 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
             }
         }
     }
+}
+
+// Choose the slot to be evicted in the full set at the index.
+uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
+    Set target_set = (*cache).sets[index];
+
+    // using least recently used
+    if (lru) {
+        uint32_t tag = -1;
+        uint32_t max_access_ts = -1;
+
+        for(int i = 0; i < target_set.slots.size(); i++) {
+            Slot curr_slot = target_set.slots[i];
+            if (curr_slot.access_ts > max_access_ts) {
+                max_access_ts = curr_slot.access_ts;
+                tag = curr_slot.tag;
+            }
+        }
+
+    } else { // using fifo
+        uint32_t tag = -1;
+        uint32_t max_load_ts = -1;
+
+        for(int i = 0; i < target_set.slots.size(); i++) {
+            Slot curr_slot = target_set.slots[i];
+            if (curr_slot.load_ts > max_load_ts) {
+                max_load_ts = curr_slot.load_ts;
+                tag = curr_slot.tag;
+            }
+        }
+    }
+
+    return tag;
 }
 
 void printSummary(int loads, int stores, int loadHits, int loadMisses, 
