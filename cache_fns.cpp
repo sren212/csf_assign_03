@@ -58,7 +58,7 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
 }
 
 
-// Update the cache to represent its state after a load
+// Update the cache to represent its state after an access
 void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
     Set target_set = (*cache).sets[index];
     // find the slot
