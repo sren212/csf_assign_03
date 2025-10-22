@@ -35,9 +35,9 @@ Slot searchCache(uint32_t tag, uint32_t index){
 // Update the cache to represent its state after a load
 bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
     bool evict_dirty = false;
-    
+
     if (!hit) {
-        updateSlot(cache, tag, index);
+        updateSlot(cache, tag, index, lru);
     }
 
     // update timestamps
@@ -169,7 +169,7 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
 }
 
 // find an empty slot or evict an empty slot in the set at index and update with tag
-bool updateSlot(Cache *cache, uint32_t tag, uint32_t index) {
+bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
     bool found_slot = false;
     bool evict_dirty = false;
 
