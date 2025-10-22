@@ -15,7 +15,7 @@ uint32_t convertHexDec(string hex){
 //divides address into tag, index, offset
 //modifies pointer of tag and index
 //returns: void
-void divAddress(uint32_t address, int bytesPerBlock, int setNum, int *tag, int *index){
+void divAddress(uint32_t address, int bytesPerBlock, int setNum, uint32_t *tag, uint32_t *index){
     //gets rid of offset
     address >> bytesPerBlock;
 
@@ -58,19 +58,13 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 
 // Update the cache to represent its state after a store
 bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru) {
-    bool evicted = false;
-    
     //store miss
     if(!hit){
-        if(write_allocate){
-            evicted = updateSlot(cache, tag, index, lru);
+        if(write_allocate && !write_through){
+            //
+
         }
     }
-
-    //update timestamps
-    updateAccessTS(cache, tag, index);
-
-    return evicted;
 }
 
 
