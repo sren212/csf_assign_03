@@ -95,7 +95,7 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
     }
 
     // update access_ts of the slot
-    int curr_access = target_slot.access_ts;
+    uint32_t curr_access = target_slot.access_ts;
     // if access_ts isn't already the max (slots.size() - 1), update slots
     if (curr_access != 0) {
         target_slot.access_ts = 0;
