@@ -27,8 +27,11 @@ struct Cache {
             sets[i].slots.resize(num_slots);
             for (size_t j = 0; j < sets[i].slots.size(); j++) {
                 Slot slot = sets[i].slots[j];
+                slot.tag = 0;
                 slot.valid = false;
                 slot.dirty = false;
+                slot.load_ts = 0;
+                slot.access_ts = 0;
             }
         }
     }
