@@ -85,7 +85,7 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
     bool evict = false;
 
     if(!hit){
-        if(write_allocate && !write_through){
+        if(write_allocate){
             evict = updateSlot(cache, tag, index, lru);
         }
     }
