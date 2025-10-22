@@ -47,35 +47,9 @@ void updateCache(Cache *cache, uint32_t tag, uint32_t index, char op_type, bool 
 // Update the cache to represent its state after a load
 bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool lru) {
     bool evict_dirty = false;
+    
     if (!hit) {
-        bool found_slot = false;
-
-        // see if there is an empty slot in cache[index]
-        Set target_set = (*cache).sets[index];
-        for (int i = 0; i < target_set.slots.size(); i++) {
-            Slot curr = target_set.slots[i]; 
-            // found an empty slot!
-            if (!curr.valid) {
-                // update slot
-                curr.tag = tag;
-                curr.valid = true;
-                curr.dirty = false;
-                found_slot = true;
-                break;
-            }
-        }
-        
-        if (!found_slot) {
-            // choose which slot to evict & update evict_dirty
-            uint32_t evict_index = chooseEvict(cache, index, lru);
-            Slot evict = (*cache).sets[index].slots[evict_index];
-            evict_dirty = evict.dirty;
-            
-            // update the slot info
-            evict.tag = tag;
-            evict.valid = true;
-            evict.dirty = false;
-        }
+        updateSlot(cache, tag, index);
     }
 
     // update timestamps
@@ -95,9 +69,9 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
     // find the slot
     Slot target_slot = target_set.slots[0];
 
-    int index = 0;
+    int slot_index = 0;
     while(target_slot.tag != tag) {
-        target_slot = target_set.slots[index++];
+        target_slot = target_set.slots[slot_index++];
     }
 
     // update access_ts of the slot
@@ -109,7 +83,7 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
         // update access_ts of all other slots
         for (int i = 0; i < target_set.slots.size() - 1; i++) {
             // skip index of the slot we already updated
-            if (i == index)
+            if (i == slot_index)
                 continue;
 
             Slot curr_slot = target_set.slots[i];
@@ -133,9 +107,9 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
     // find the slot
     Slot target_slot = target_set.slots[0];
 
-    int index = 0;
+    int slot_index = 0;
     while(target_slot.tag != tag) {
-        target_slot = target_set.slots[index++];
+        target_slot = target_set.slots[slot_index++];
     }
 
     // update load_ts of the slot
@@ -147,7 +121,7 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
         // update load_ts of all other slots
         for (int i = 0; i < target_set.slots.size() - 1; i++) {
             // skip index of the slot we already updated
-            if (i == index)
+            if (i == slot_index)
                 continue;
 
             Slot curr_slot = target_set.slots[i];
@@ -197,6 +171,39 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
     }
 
     return tag;
+}
+
+// find an empty slot or evict an empty slot in the set at index and update with tag
+bool updateSlot(Cache *cache, uint32_t tag, uint32_t index) {
+    bool found_slot = false;
+    bool evict_dirty = false;
+
+    // see if there is an empty slot in cache[index]
+    Set target_set = (*cache).sets[index];
+    for (int i = 0; i < target_set.slots.size(); i++) {
+        Slot curr = target_set.slots[i]; 
+        // found an empty slot!
+        if (!curr.valid) {
+            // update slot
+            curr.tag = tag;
+            curr.valid = true;
+            curr.dirty = false;
+            found_slot = true;
+            return evict_dirty;
+        }
+    }
+    
+    // choose which slot to evict & update evict_dirty
+    uint32_t evict_index = chooseEvict(cache, index, lru);
+    Slot evict = (*cache).sets[index].slots[evict_index];
+    evict_dirty = evict.dirty;
+    
+    // update the slot info
+    evict.tag = tag;
+    evict.valid = true;
+    evict.dirty = false;
+
+    return evict_dirty;
 }
 
 void printSummary(int loads, int stores, int loadHits, int loadMisses, 
