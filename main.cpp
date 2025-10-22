@@ -127,13 +127,6 @@ int main( int argc, char **argv ) {
     getline(line_stream, field, ' ');
     string addressString = field;
 
-    // update total loads/stores:
-    if (opString == "l"){
-      loads++;
-    } else {
-      stores++;
-    }
-
     // do operations
     //split hexadecimal from "0x"
     if(addressString.length() == 10){
@@ -155,18 +148,22 @@ int main( int argc, char **argv ) {
 
     //update hit/miss
     if(hit && opString == "l"){
+      loads++;
       loadHits++;
       cycles++;
       evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else if(hit && opString == "s"){
+      stores++;
       storeHits++;
       cycles++;
       evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else if(!hit && opString == "l"){
+      loads++;
       loadMisses++;
       cycles += bytesPerBlock*100;
       evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }else{
+      stores++;
       storeMisses++;
       if (writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
         cycles += bytesPerBlock*100;
@@ -187,8 +184,6 @@ int main( int argc, char **argv ) {
 
   // output summary info
   printSummary(loads, stores, loadHits, loadMisses, storeHits, storeMisses, cycles);
-
-
 
   return 0;
 }
