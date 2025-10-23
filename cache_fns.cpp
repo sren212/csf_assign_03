@@ -57,7 +57,7 @@ bool isHit(Cache *cache, uint32_t tag, uint32_t index){
     
     // search set for a slot whose tag matches our target tag
     for(size_t i = 0; i < target_set.slots.size(); i++) {
-        if (target_set.slots[i].tag == tag && target_set.slots[i].valid) {
+        if (target_set.slots[i].valid && target_set.slots[i].tag == tag) {
             return true;
         }
     }

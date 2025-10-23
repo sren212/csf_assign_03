@@ -158,12 +158,12 @@ int main( int argc, char **argv ) {
       stores++;
       storeHits++;
       cycles++;
-      evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
+      evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }else if(!hit && opString == "l"){
       loads++;
       loadMisses++;
       cycles += bytesPerBlock*100;
-      evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
+      evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else{
       stores++;
       storeMisses++;
