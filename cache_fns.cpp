@@ -71,7 +71,7 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 
     // if it's a miss, we need to find an empty slot/evict a slot and update it
     if (!hit) {
-        evict_dirty = updateSlot(cache, tag, index, lru);
+        evict_dirty = updateSlot(cache, tag, index, lru, false);
     }
 
     // update timestamps
@@ -86,7 +86,7 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
 
     if(!hit){
         if(write_allocate){
-            evict = updateSlot(cache, tag, index, lru);
+            evict = updateSlot(cache, tag, index, lru, true);
         }
     }
 
@@ -208,7 +208,7 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
 }
 
 // find an empty slot or evict an empty slot in the set at index and update with tag
-bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
+bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru, bool store) {
     bool evict_dirty = false;
 
     // see if there is an empty slot in cache[index]
@@ -235,7 +235,7 @@ bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
     // update the slot info
     evict->tag = tag;
     evict->valid = true;
-    evict->dirty = true;
+    evict->dirty = store;
     evict->load_ts = 0;
     evict->access_ts = 0;
 
