@@ -90,7 +90,7 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
         }
     }
 
-    if(write_allocate){
+    if(hit || write_allocate){
         updateAccessTS(cache, tag, index);
         updateLoadTS(cache, tag, index);
     }
