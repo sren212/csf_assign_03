@@ -57,7 +57,7 @@ bool isHit(Cache *cache, uint32_t tag, uint32_t index){
     
     // search set for a slot whose tag matches our target tag
     for(size_t i = 0; i < target_set.slots.size(); i++) {
-        if (target_set.slots[i].tag == tag) {
+        if (target_set.slots[i].tag == tag && target_set.slots[i].valid) {
             return true;
         }
     }
@@ -98,40 +98,37 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
 
 // Update the cache to represent its state after an access
 void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
+    Set *target_set = &(*cache).sets[index];
+    int target_index = -1;
 
-    Set* target_set = &(cache->sets[index]);
-    // find the slot
-    Slot* target_slot = &(target_set->slots[0]);
+    for (uint32_t i = 0; i < target_set->slots.size(); i++) {
+        if (target_set->slots[i].valid && target_set->slots[i].tag == tag) {
+            target_index = i;
+            break;
+        }
+    }
 
-    // find the slot with our target tag
-    uint32_t slot_index = 0;
-    while(target_slot->tag != tag) {
-        *target_slot = target_set->slots[slot_index++];
+    if (target_index == -1) {
+        return;
     }
 
     // update access_ts of the slot
-    uint32_t* curr_access = &target_slot->access_ts;
+    uint32_t old_access = target_set->slots[target_index].access_ts;
+    target_set->slots[target_index].access_ts = 0;
     // if access_ts isn't already the max (slots.size() - 1), update slots
-    if (*curr_access != 0) {
-        target_slot->access_ts = 0;
-        
-        // update access_ts of all other slots
-        for (uint32_t i = 0; i < (*target_set).slots.size() - 1; i++) {
-            // skip index of the slot we already updated
-            if (i == slot_index)
-                continue;
+    for (uint32_t i = 0; i < target_set->slots.size(); i++) {
+        // skip target index
+        if ((int)i == target_index) {
+            continue;
+        }
 
-            Slot* curr_slot = &(*target_set).slots[i];
-
-            // skip invalid slots
-            if (!curr_slot->valid)
-                continue;
-            
-            // inrease the timestamp if it is less than the original access_ts of our target
-            // otherwise, the timestamp will remain the same
-            if (curr_slot->access_ts < *curr_access) {
-                curr_slot->access_ts += 1;
-            }
+        Slot *curr = &target_set->slots[i];
+        // skip invalid slots
+        if (!curr->valid) {
+            continue;
+        }
+        if (curr->access_ts < old_access) {
+            curr->access_ts++;
         }
     }
 }
@@ -139,38 +136,36 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
 // Update the cache to represent its state after a load
 void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
     Set *target_set = &(*cache).sets[index];
-    // find the slot
-    Slot *target_slot = &(*target_set).slots[0];
-    
-    // find the slot with our target tag
-    uint32_t slot_index = 0;
-    while((*target_slot).tag != tag) {
-        target_slot = &(target_set->slots[slot_index++]);
+    int target_index = -1;
+
+    for (uint32_t i = 0; i < target_set->slots.size(); i++) {
+        if (target_set->slots[i].valid && target_set->slots[i].tag == tag) {
+            target_index = i;
+            break;
+        }
+    }
+
+    if (target_index == -1) {
+        return;
     }
 
     // update load_ts of the slot
-    uint32_t curr_access = target_slot->load_ts;
+    uint32_t old_access = target_set->slots[target_index].load_ts;
+    target_set->slots[target_index].load_ts = 0;
     // if load_ts isn't already the max (slots.size() - 1), update slots
-    if (curr_access != 0) {
-        target_slot->load_ts = 0;
-        
-        // update load_ts of all other slots
-        for (uint32_t i = 0; i < target_set->slots.size() - 1; i++) {
-            // skip index of the slot we already updated
-            if (i == slot_index)
-                continue;
+    for (uint32_t i = 0; i < target_set->slots.size(); i++) {
+        // skip target index
+        if ((int)i == target_index) {
+            continue;
+        }
 
-            Slot *curr_slot = &(*target_set).slots[i];
-
-            // skip invalid slots
-            if (!curr_slot->valid)
-                continue;
-            
-            // inrease the timestamp if it is less than the original load_ts of our target
-            // otherwise, the timestamp will remain the same
-            if (curr_slot->load_ts < curr_access) {
-                curr_slot->load_ts += 1;
-            }
+        Slot *curr = &target_set->slots[i];
+        // skip invalid slots
+        if (!curr->valid) {
+            continue;
+        }
+        if (curr->load_ts < old_access) {
+            curr->load_ts++;
         }
     }
 }
