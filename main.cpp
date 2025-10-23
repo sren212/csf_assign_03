@@ -45,13 +45,15 @@ int main( int argc, char **argv ) {
 
   //number of bytes in each block
   try {
-    bytesPerBlock = stoi(argv[3])/4;
+    bytesPerBlock = stoi(argv[3]);
 
     if(!isPowerOfTwo(bytesPerBlock)){
       throw invalid_argument("Bytes per block must be a positive power-of-2");
     }else if(bytesPerBlock < 4){
       throw invalid_argument("Bytes per block must be greater than or equal to 4");
     }
+
+    bytesPerBlock /= 4;
   }catch(const invalid_argument& e){
     cerr << "Invalid argument: " << e.what() << endl;
     return 1;
