@@ -168,7 +168,7 @@ int main( int argc, char **argv ) {
       stores++;
       storeMisses++;
       if (writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
-        cycles += bytesPerBlock*100;
+        cycles += bytesPerBlock*100 + 1;
       }
       evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }
