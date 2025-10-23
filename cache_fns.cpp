@@ -178,28 +178,28 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
 // Choose the slot to be evicted in the full set at the index.
 uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
     Set target_set = cache->sets[index];
-    uint32_t ans_index = -1;
+    int ans_index = -1;
 
     // using least recently used
     if (lru) {
-        uint32_t max_access_ts = -1;
+        int max_access_ts = -1;
 
         // go through slots and find the slot with the highest access_ts
         for(uint32_t i = 0; i < target_set.slots.size(); i++) {
             Slot curr_slot = target_set.slots[i];
-            if (curr_slot.access_ts > max_access_ts) {
+            if ((int)curr_slot.access_ts > max_access_ts) {
                 max_access_ts = curr_slot.access_ts;
                 ans_index = i;
             }
         }
 
     } else { // using fifo
-        uint32_t max_load_ts = -1;
+        int max_load_ts = -1;
 
         // go through slots and find the slot with the highest load_ts
         for(uint32_t i = 0; i < target_set.slots.size(); i++) {
             Slot curr_slot = target_set.slots[i];
-            if (curr_slot.load_ts > max_load_ts) {
+            if ((int)curr_slot.load_ts > max_load_ts) {
                 max_load_ts = curr_slot.load_ts;
                 ans_index = i;
             }
