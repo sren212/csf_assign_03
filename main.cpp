@@ -164,7 +164,7 @@ int main( int argc, char **argv ) {
     }else if(!hit && opString == "l"){
       loads++;
       loadMisses++;
-      cycles += bytesPerBlock*100;
+      cycles += bytesPerBlock*100 + 1;
       evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else{
       stores++;
