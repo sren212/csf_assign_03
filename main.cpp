@@ -130,7 +130,7 @@ int main( int argc, char **argv ) {
 
     // do operations
     //split hexadecimal from "0x"
-    if(addressString.length() == 10){
+    if(addressString.length() <= 10){
       addressString.erase(0, 2);
     }else{
       cerr << "invalid address in trace file" << endl;
