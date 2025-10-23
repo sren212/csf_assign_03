@@ -45,7 +45,7 @@ int main( int argc, char **argv ) {
 
   //number of bytes in each block
   try {
-    bytesPerBlock = stoi(argv[3]);
+    bytesPerBlock = stoi(argv[3])/4;
 
     if(!isPowerOfTwo(bytesPerBlock)){
       throw invalid_argument("Bytes per block must be a positive power-of-2");
