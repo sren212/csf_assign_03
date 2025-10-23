@@ -72,11 +72,11 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
     // if it's a miss, we need to find an empty slot/evict a slot and update it
     if (!hit) {
         evict_dirty = updateSlot(cache, tag, index, lru, false);
+        updateLoadTS(cache, tag, index);
     }
 
     // update timestamps
     updateAccessTS(cache, tag, index);
-    updateLoadTS(cache, tag, index);
     return evict_dirty;
 }
 
@@ -87,12 +87,12 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
     if(!hit){
         if(write_allocate){
             evict = updateSlot(cache, tag, index, lru, true);
+            updateLoadTS(cache, tag, index);
         }
     }
 
     if(hit || write_allocate){
         updateAccessTS(cache, tag, index);
-        updateLoadTS(cache, tag, index);
     }
 
     return evict;
