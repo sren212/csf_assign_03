@@ -90,9 +90,7 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
         }
     }
 
-    if(write_allocate){
-        updateAccessTS(cache, tag, index);
-    }
+    updateAccessTS(cache, tag, index);
 
     return evict;
 }
@@ -131,8 +129,8 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
             
             // inrease the timestamp if it is less than the original access_ts of our target
             // otherwise, the timestamp will remain the same
-            if ((*curr_slot).access_ts < *curr_access) {
-                (*curr_slot).access_ts += 1;
+            if (curr_slot->access_ts < *curr_access) {
+                curr_slot->access_ts += 1;
             }
         }
     }
@@ -140,38 +138,38 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
 
 // Update the cache to represent its state after a load
 void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
-    Set target_set = (*cache).sets[index];
+    Set *target_set = &(*cache).sets[index];
     // find the slot
-    Slot target_slot = target_set.slots[0];
+    Slot *target_slot = &(*target_set).slots[0];
     
     // find the slot with our target tag
     uint32_t slot_index = 0;
-    while(target_slot.tag != tag) {
-        target_slot = target_set.slots[slot_index++];
+    while((*target_slot).tag != tag) {
+        target_slot = &(target_set->slots[slot_index++]);
     }
 
     // update load_ts of the slot
-    uint32_t curr_access = target_slot.load_ts;
+    uint32_t curr_access = target_slot->load_ts;
     // if load_ts isn't already the max (slots.size() - 1), update slots
     if (curr_access != 0) {
-        target_slot.load_ts = 0;
+        target_slot->load_ts = 0;
         
         // update load_ts of all other slots
-        for (uint32_t i = 0; i < target_set.slots.size() - 1; i++) {
+        for (uint32_t i = 0; i < target_set->slots.size() - 1; i++) {
             // skip index of the slot we already updated
             if (i == slot_index)
                 continue;
 
-            Slot curr_slot = target_set.slots[i];
+            Slot *curr_slot = &(*target_set).slots[i];
 
             // skip invalid slots
-            if (!curr_slot.valid)
+            if (!curr_slot->valid)
                 continue;
             
             // inrease the timestamp if it is less than the original load_ts of our target
             // otherwise, the timestamp will remain the same
-            if (curr_slot.load_ts < curr_access) {
-                curr_slot.load_ts += 1;
+            if (curr_slot->load_ts < curr_access) {
+                curr_slot->load_ts += 1;
             }
         }
     }
@@ -179,12 +177,11 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
 
 // Choose the slot to be evicted in the full set at the index.
 uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
-    Set target_set = (*cache).sets[index];
-    uint32_t tag;
+    Set target_set = cache->sets[index];
+    uint32_t ans_index = -1;
 
     // using least recently used
     if (lru) {
-        tag = -1;
         uint32_t max_access_ts = -1;
 
         // go through slots and find the slot with the highest access_ts
@@ -192,12 +189,11 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
             Slot curr_slot = target_set.slots[i];
             if (curr_slot.access_ts > max_access_ts) {
                 max_access_ts = curr_slot.access_ts;
-                tag = curr_slot.tag;
+                ans_index = i;
             }
         }
 
     } else { // using fifo
-        tag = -1;
         uint32_t max_load_ts = -1;
 
         // go through slots and find the slot with the highest load_ts
@@ -205,12 +201,12 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
             Slot curr_slot = target_set.slots[i];
             if (curr_slot.load_ts > max_load_ts) {
                 max_load_ts = curr_slot.load_ts;
-                tag = curr_slot.tag;
+                ans_index = i;
             }
         }
     }
 
-    return tag;
+    return ans_index;
 }
 
 // find an empty slot or evict an empty slot in the set at index and update with tag
@@ -218,28 +214,28 @@ bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
     bool evict_dirty = false;
 
     // see if there is an empty slot in cache[index]
-    Set target_set = (*cache).sets[index];
-    for (uint32_t i = 0; i < target_set.slots.size(); i++) {
-        Slot curr = target_set.slots[i]; 
+    Set *target_set = &cache->sets[index];
+    for (uint32_t i = 0; i < (*target_set).slots.size(); i++) {
+        Slot *curr = &target_set->slots[i]; 
         // found an empty slot!
-        if (!curr.valid) {
+        if (!(*curr).valid) {
             // update slot
-            curr.tag = tag;
-            curr.valid = true;
-            curr.dirty = false;
+            (*curr).tag = tag;
+            (*curr).valid = true;
+            (*curr).dirty = false;
             return evict_dirty;
         }
     }
     
     // choose which slot to evict & update evict_dirty
     uint32_t evict_index = chooseEvict(cache, index, lru);
-    Slot evict = (*cache).sets[index].slots[evict_index];
-    evict_dirty = evict.dirty;
+    Slot *evict = &cache->sets[index].slots[evict_index];
+    evict_dirty = evict->dirty;
     
     // update the slot info
-    evict.tag = tag;
-    evict.valid = true;
-    evict.dirty = false;
+    evict->tag = tag;
+    evict->valid = true;
+    evict->dirty = false;
 
     return evict_dirty;
 }
