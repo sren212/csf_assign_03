@@ -24,7 +24,7 @@ bool isPowerOfTwo(int n){
 
 //converts hexadecimal to int
 uint32_t convertHexDec(string hex){
-    return std::stoi(hex, nullptr, 16);
+    return static_cast<uint32_t>(std::stoul(hex, nullptr, 16));
 }
 
 //divides address into tag, index, offset
