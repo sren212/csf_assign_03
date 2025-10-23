@@ -90,7 +90,10 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
         }
     }
 
-    updateAccessTS(cache, tag, index);
+    if(write_allocate){
+        updateAccessTS(cache, tag, index);
+        updateLoadTS(cache, tag, index);
+    }
 
     return evict;
 }
@@ -218,6 +221,8 @@ bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
             (*curr).tag = tag;
             (*curr).valid = true;
             (*curr).dirty = false;
+            (*curr).load_ts = 0;
+            (*curr).access_ts = 0;
             return evict_dirty;
         }
     }
@@ -231,6 +236,8 @@ bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
     evict->tag = tag;
     evict->valid = true;
     evict->dirty = false;
+    evict->load_ts = 0;
+    evict->access_ts = 0;
 
     return evict_dirty;
 }
