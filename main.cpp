@@ -45,7 +45,7 @@ int main( int argc, char **argv ) {
 
   //number of bytes in each block
   try {
-    bytesPerBlock = stoi(argv[3])/4;
+    bytesPerBlock = stoi(argv[3]);
 
     if(!isPowerOfTwo(bytesPerBlock)){
       throw invalid_argument("Bytes per block must be a positive power-of-2");
@@ -162,7 +162,7 @@ int main( int argc, char **argv ) {
     }else if(!hit && opString == "l"){
       loads++;
       loadMisses++;
-      cycles += bytesPerBlock*100+1;
+      cycles += bytesPerBlock*100;
       evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else{
       stores++;
@@ -180,7 +180,7 @@ int main( int argc, char **argv ) {
 
     // add to cycles if we used write-through
     if (writeThrough) {
-      cycles += bytesPerBlock*100+1;
+      cycles += bytesPerBlock*100 + 1;
     }
   }
 
