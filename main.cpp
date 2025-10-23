@@ -179,8 +179,8 @@ int main( int argc, char **argv ) {
     }
 
     // add to cycles if we used write-through
-    if (writeThrough) {
-      cycles += bytesPerBlock*100 + 1;
+    if (writeThrough && opString == "s") {
+      cycles += bytesPerBlock*100;
     }
   }
 
