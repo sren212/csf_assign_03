@@ -180,7 +180,7 @@ int main( int argc, char **argv ) {
       cycles += bytesPerBlock*100;
     }
 
-    // add to cycles if we used write-through
+    // add to cycles if we used write-through for a store
     if (writeThrough && opString == "s") {
       cycles += bytesPerBlock*100;
     }
