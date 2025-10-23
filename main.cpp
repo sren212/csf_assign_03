@@ -59,9 +59,9 @@ int main( int argc, char **argv ) {
 
   //write-allocate
   try{
-    if(strcmp(argv[4], "write-allocate")){
+    if(strcmp(argv[4], "write-allocate") == 0){
       writeAllocate = true;
-    }else if(strcmp(argv[4], "no-write-allocate")){
+    }else if(strcmp(argv[4], "no-write-allocate") == 0){
       writeAllocate = false;
     }else{
       throw invalid_argument("must enter write-allocate/no-write-allocate for 4th argument");
@@ -73,9 +73,9 @@ int main( int argc, char **argv ) {
 
   //write-through / write-back
   try{
-    if(strcmp(argv[5], "write-through")){
+    if(strcmp(argv[5], "write-through") == 0){
       writeThrough = true;
-    }else if(strcmp(argv[5], "write-back")){
+    }else if(strcmp(argv[5], "write-back") == 0){
       if(!writeAllocate){
         throw invalid_argument("cannot specify write-back and no-write-allocate at the same time");
       }
@@ -90,9 +90,9 @@ int main( int argc, char **argv ) {
 
   //lru / fifo
   try{
-    if(strcmp(argv[6], "lru")){
+    if(strcmp(argv[6], "lru") == 0){
       lru = true;
-    }else if(strcmp(argv[6], "fifo")){
+    }else if(strcmp(argv[6], "fifo") == 0){
       lru = false;
     }else{
       throw invalid_argument("must enter lru / fifo for 6th argument");
