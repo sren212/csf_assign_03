@@ -52,8 +52,6 @@ int main( int argc, char **argv ) {
     }else if(bytesPerBlock < 4){
       throw invalid_argument("Bytes per block must be greater than or equal to 4");
     }
-
-    bytesPerBlock /= 4;
   }catch(const invalid_argument& e){
     cerr << "Invalid argument: " << e.what() << endl;
     return 1;
@@ -164,25 +162,25 @@ int main( int argc, char **argv ) {
     }else if(!hit && opString == "l"){
       loads++;
       loadMisses++;
-      cycles += bytesPerBlock*100 + 1;
+      cycles += bytesPerBlock*100/4 + 1;
       evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else{
       stores++;
       storeMisses++;
       if (writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
-        cycles += bytesPerBlock*100 + 1;
+        cycles += bytesPerBlock*100/4 + 1;
       }
       evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }
 
     // add to cycles if we evicted a dirty bit and we are using write-back
     if (evict_dirty && !writeThrough) {
-      cycles += bytesPerBlock*100;
+      cycles += bytesPerBlock*100/4;
     }
 
     // add to cycles if we used write-through for a store
     if (writeThrough && opString == "s") {
-      cycles += bytesPerBlock*100;
+      cycles += bytesPerBlock*100/4;
     }
   }
 
