@@ -107,29 +107,16 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
 // Update the cache to represent its state after an access
 void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
     Set *target_set = &(*cache).sets[index];
-    int target_index = -1;
-
+    
+    // update access_ts of slot + all other slots
     for (uint32_t i = 0; i < target_set->slots.size(); i++) {
-        if (target_set->slots[i].valid && target_set->slots[i].tag == tag) {
-            target_index = i;
-            break;
-        }
-    }
-
-    if (target_index == -1) {
-        return;
-    }
-
-    // update access_ts of the slot
-    target_set->slots[target_index].access_ts = 0;
-    // if access_ts isn't already the max (slots.size() - 1), update slots
-    for (uint32_t i = 0; i < target_set->slots.size(); i++) {
+        Slot *curr = &target_set->slots[i];
         // skip target index
-        if ((int)i == target_index) {
+        if (curr->valid && curr->tag == tag) {
+            curr->access_ts = 0;
             continue;
         }
 
-        Slot *curr = &target_set->slots[i];
         // skip invalid slots
         if (!curr->valid) {
             continue;
@@ -142,29 +129,17 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
 // Update the cache to represent its state after a load
 void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
     Set *target_set = &(*cache).sets[index];
-    int target_index = -1;
-
+    
+    // update load_ts of slot + all other slots
     for (uint32_t i = 0; i < target_set->slots.size(); i++) {
-        if (target_set->slots[i].valid && target_set->slots[i].tag == tag) {
-            target_index = i;
-            break;
-        }
-    }
+        Slot *curr = &target_set->slots[i];
 
-    if (target_index == -1) {
-        return;
-    }
-
-    // update load_ts of the slot
-    target_set->slots[target_index].load_ts = 0;
-    // if load_ts isn't already the max (slots.size() - 1), update slots
-    for (uint32_t i = 0; i < target_set->slots.size(); i++) {
         // skip target index
-        if ((int)i == target_index) {
+        if (curr->valid && curr->tag == tag) {
+            curr->load_ts = 0;
             continue;
         }
 
-        Slot *curr = &target_set->slots[i];
         // skip invalid slots
         if (!curr->valid) {
             continue;
