@@ -1,22 +1,9 @@
 TODO: names of team members and their contributions to the project
 
-functions
-- load miss
-- load hit
-- store miss
-- store hit
-
-- update time access
-updateAccessTS
-- update time load
-updateLoadTS
-- choose evict -> wb & wa 
-chooseEvict
-
 Suwen Ren
-
+- isHit, updateCacheLoad, updateAccessTS, updateLoadTS, chooseEvict, updateSlot, markDirty, printSummary
 
 Lena Shea
-- 
+- initCache, isPowerOfTwo, convertHexDec, divAddress, updateCacheStore, input handling + structure of main.cpp
 
 TODO (for MS3): best cache report
