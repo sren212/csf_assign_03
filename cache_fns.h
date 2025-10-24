@@ -99,8 +99,15 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru);
 // tag - the tag of the element
 // index - the index of the element
 // lru - whether we are using lru (true) or fifo (false)
-// store - whether or not we are performing a store
-bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru, bool store);
+bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru);
+
+// Mark the slot dirty
+//
+// Parameters:
+// cache - the cache
+// tag - the tag of the element
+// index - the index of the element
+void markDirty(Cache *cache, uint32_t tag, uint32_t index);
 
 // Print out a summary of the cache simulator.
 //
