@@ -121,7 +121,6 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
     }
 
     // update access_ts of the slot
-    uint32_t old_access = target_set->slots[target_index].access_ts;
     target_set->slots[target_index].access_ts = 0;
     // if access_ts isn't already the max (slots.size() - 1), update slots
     for (uint32_t i = 0; i < target_set->slots.size(); i++) {
@@ -157,7 +156,6 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
     }
 
     // update load_ts of the slot
-    uint32_t old_access = target_set->slots[target_index].load_ts;
     target_set->slots[target_index].load_ts = 0;
     // if load_ts isn't already the max (slots.size() - 1), update slots
     for (uint32_t i = 0; i < target_set->slots.size(); i++) {
