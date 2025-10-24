@@ -71,7 +71,7 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 
     // if it's a miss, we need to find an empty slot/evict a slot and update it
     if (!hit) {
-        evict_dirty = updateSlot(cache, tag, index, lru, false);
+        evict_dirty = updateSlot(cache, tag, index, lru);
         updateLoadTS(cache, tag, index);
     }
 
@@ -86,9 +86,14 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
 
     if(!hit){
         if(write_allocate){
-            evict = updateSlot(cache, tag, index, lru, true);
+            evict = updateSlot(cache, tag, index, lru);
             updateLoadTS(cache, tag, index);
+            markDirty(cache, tag, index);
         }
+    }
+    
+    if(hit) {
+        markDirty(cache, tag, index);
     }
 
     if(hit || write_allocate){
@@ -208,7 +213,7 @@ uint32_t chooseEvict(Cache *cache, uint32_t index, bool lru) {
 }
 
 // find an empty slot or evict an empty slot in the set at index and update with tag
-bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru, bool store) {
+bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru) {
     bool evict_dirty = false;
 
     // see if there is an empty slot in cache[index]
@@ -235,11 +240,22 @@ bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru, bool store
     // update the slot info
     evict->tag = tag;
     evict->valid = true;
-    evict->dirty = store;
+    evict->dirty = false;
     evict->load_ts = 0;
     evict->access_ts = 0;
 
     return evict_dirty;
+}
+
+// Mark the slot dirty
+void markDirty(Cache *cache, uint32_t tag, uint32_t index) {
+    Set *target_set = &cache->sets[index];
+    for (auto &slot : target_set->slots) {
+        if (slot.valid && slot.tag == tag) {
+            slot.dirty = true;
+            break;
+        }
+    }
 }
 
 void printSummary(int loads, int stores, int loadHits, int loadMisses, 
