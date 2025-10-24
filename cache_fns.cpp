@@ -3,6 +3,7 @@
 #include <cmath>
 #include "cache_fns.h"
 
+//initialize the cache
 void initCache(int num_sets, int num_slots, Cache *cache){
     (*cache).sets.resize(static_cast<size_t>(num_sets));
     for (size_t i = 0; i < (*cache).sets.size(); i++) {
@@ -18,6 +19,7 @@ void initCache(int num_sets, int num_slots, Cache *cache){
     }
 }
 
+//calculates if the number is a positive power of two
 bool isPowerOfTwo(int n){
     return n > 0 && (n & (n-1)) == 0;
 }
@@ -70,6 +72,7 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
     bool evict_dirty = false;
 
     // if it's a miss, we need to find an empty slot/evict a slot and update it
+    // update loadTS for new block in cache
     if (!hit) {
         evict_dirty = updateSlot(cache, tag, index, lru);
         updateLoadTS(cache, tag, index);
@@ -84,6 +87,9 @@ bool updateCacheLoad(Cache *cache, uint32_t tag, uint32_t index, bool hit, bool 
 bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_allocate, bool write_through, bool hit, bool lru) {
     bool evict = false;
 
+    //if cache miss AND write-allocate, find an empty slot/evict a slot and update it
+    //update loadTS for new block in cache
+    //make updated slot as dirty
     if(!hit){
         if(write_allocate){
             evict = updateSlot(cache, tag, index, lru);
@@ -92,10 +98,12 @@ bool updateCacheStore(Cache *cache, uint32_t tag, uint32_t index, bool write_all
         }
     }
     
+    //if cache hit, make sure slot is marked dirty
     if(hit) {
         markDirty(cache, tag, index);
     }
 
+    //if cache hit or write-allocate, update accessTS since new information stored in slot
     if(hit || write_allocate){
         updateAccessTS(cache, tag, index);
     }
@@ -122,6 +130,7 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
             continue;
         }
         
+        //increment access_ts
         curr->access_ts++;
     }
 }
@@ -133,7 +142,6 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
     // update load_ts of slot + all other slots
     for (uint32_t i = 0; i < target_set->slots.size(); i++) {
         Slot *curr = &target_set->slots[i];
-
         // skip target index
         if (curr->valid && curr->tag == tag) {
             curr->load_ts = 0;
@@ -145,6 +153,7 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
             continue;
         }
 
+        //increment load_ts
         curr->load_ts++;
     }
 }

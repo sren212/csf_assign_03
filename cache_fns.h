@@ -21,6 +21,7 @@ struct Cache {
     std::vector<Set> sets;
 };
 
+//initializes the cache
 void initCache(int num_sets, int num_slots, Cache *cache);
 
 //checks if the number if a power of 2
