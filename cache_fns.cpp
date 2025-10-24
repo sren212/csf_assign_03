@@ -135,9 +135,8 @@ void updateAccessTS(Cache *cache, uint32_t tag, uint32_t index) {
         if (!curr->valid) {
             continue;
         }
-        if (curr->access_ts < old_access) {
-            curr->access_ts++;
-        }
+        
+        curr->access_ts++;
     }
 }
 
@@ -172,9 +171,8 @@ void updateLoadTS(Cache *cache, uint32_t tag, uint32_t index) {
         if (!curr->valid) {
             continue;
         }
-        if (curr->load_ts < old_access) {
-            curr->load_ts++;
-        }
+
+        curr->load_ts++;
     }
 }
 
