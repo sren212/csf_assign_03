@@ -149,6 +149,7 @@ int main( int argc, char **argv ) {
     bool hit = isHit(&cache, tag, index);
 
     //update hit/miss & cache
+    int memoryBytes = bytesPerBlock*100/4;
     if(hit && opString == "l"){
       loads++;
       loadHits++;
@@ -162,20 +163,20 @@ int main( int argc, char **argv ) {
     }else if(!hit && opString == "l"){
       loads++;
       loadMisses++;
-      cycles += bytesPerBlock*100/4 + 1;
+      cycles += memoryBytes + 1;
       evict_dirty = updateCacheLoad(&cache, tag, index, hit, lru);
     }else{
       stores++;
       storeMisses++;
       if (writeAllocate) { // on a store miss + no-write-allocate, we do not affect the cache
-        cycles += bytesPerBlock*100/4 + 1;
+        cycles += memoryBytes + 1;
       }
       evict_dirty = updateCacheStore(&cache, tag, index, writeAllocate, writeThrough, hit, lru);
     }
 
     // add to cycles if we evicted a dirty bit and we are using write-back
     if (evict_dirty && !writeThrough) {
-      cycles += bytesPerBlock*100/4;
+      cycles += memoryBytes;
     }
 
     // add to cycles if we used write-through for a store (for modifying memory)
