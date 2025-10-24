@@ -1,5 +1,3 @@
-TODO: names of team members and their contributions to the project
-
 Suwen Ren
 - isHit, updateCacheLoad, updateAccessTS, updateLoadTS, chooseEvict, updateSlot, markDirty, printSummary
 
