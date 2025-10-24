@@ -220,7 +220,7 @@ bool updateSlot(Cache *cache, uint32_t tag, uint32_t index, bool lru, bool store
             // update slot
             (*curr).tag = tag;
             (*curr).valid = true;
-            (*curr).dirty = false;
+            (*curr).dirty = store;
             (*curr).load_ts = 0;
             (*curr).access_ts = 0;
             return evict_dirty;
